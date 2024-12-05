@@ -71,7 +71,7 @@ public partial class Actor : CharacterBody3D
             // If we moved diagonally, we take sqrt(a^2+b^2) time instead of just a.
             if (idPath[0].X != gridPosition.X && idPath[0].Y != gridPosition.Y)
             {
-                walkCooldown.WaitTime = Math.Sqrt(Math.Pow(MOVE_TIME,2)+Math.Pow(MOVE_TIME,2));
+                walkCooldown.WaitTime = Math.Sqrt(Math.Pow(MOVE_TIME, 2) + Math.Pow(MOVE_TIME, 2));
             }
             else
             {
@@ -81,7 +81,11 @@ public partial class Actor : CharacterBody3D
             gridPosition = idPath[0];
             map.SetPointSolid(gridPosition, true);
 
-            if (path.Length > 1) DebugDraw3D.DrawPointPath(path,duration:(float)walkCooldown.WaitTime);
+            if (Game.DebugOverlay)
+            {
+                if (path.Length > 1) DebugDraw3D.DrawPointPath(path, duration: (float)walkCooldown.WaitTime);
+                DebugDraw3D.DrawLine(map.GridToWorld(gridPosition), map.GridToWorld(Destination), duration: (float)walkCooldown.WaitTime);
+            }
 
             path = path.Skip(1).ToArray();
             idPath = idPath.Skip(1).ToArray();
@@ -106,7 +110,7 @@ public partial class Actor : CharacterBody3D
     {
         if (inputEvent is InputEventMouseButton mouse && mouse.ButtonIndex == MouseButton.Left && mouse.Pressed)
         {
-            Game.selected = this;
+            Game.Selected = this;
         }
     }
 }

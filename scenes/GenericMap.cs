@@ -50,6 +50,15 @@ public partial class GenericMap : CsgMesh3D
         );
     }
 
+    public Vector3 GridToWorld(Vector2I grid)
+    {
+        return new Vector3(
+            ((grid.X - MapDimensions.X * 0.5f) * CellSize.X) + 2.0f,
+            0.0f,
+            ((grid.Y - MapDimensions.Y * 0.5f) * CellSize.Y) + 2.0f
+        );
+    }
+
     public void SetPointSolid(Vector2I point, bool solid)
     {
         navGrid.SetPointSolid(point, solid);
@@ -65,7 +74,7 @@ public partial class GenericMap : CsgMesh3D
         if (inputEvent is InputEventMouseButton mouse && mouse.ButtonIndex == MouseButton.Left && mouse.Pressed)
         {
             DebugDraw3D.DrawRay(eventPos, eventNorm,4,duration:10);
-            if (Game.selected != null) Game.selected.MoveTo(this, WorldToGrid(eventPos));
+            if (Game.Selected != null) Game.Selected.MoveTo(this, WorldToGrid(eventPos));
         }
     }
 }

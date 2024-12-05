@@ -67,7 +67,7 @@ MOVE_TIME = 0.5
 Destination = Vector2i(116, 98)
 
 [node name="STEVE_001" parent="." instance=ExtResource("4_pax3m")]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -2, 3.4, 2)
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -10, 3.4, 6)
 MOVE_TIME = 0.5
 Destination = Vector2i(50, 21)
 
