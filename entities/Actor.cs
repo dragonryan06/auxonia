@@ -1,29 +1,76 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public partial class Actor : CharacterBody3D
 {
     [Export]
-    float MOVE_SPEED = 1.0f; 
+    float MOVE_TIME = 1.0f;
+
     [Export]
-    Vector2 destination = new Vector2();
+    NodePath Map = "../Map";
 
-    public override void _PhysicsProcess(double delta)
+    [Export]
+    Vector2I destination = Vector2I.Zero;
+
+    private Vector2I gridPosition = Vector2I.Zero;
+
+    private Vector3[] path;
+    private Vector2I[] idPath;
+
+    private Timer walkCooldown;
+
+    public override void _Ready()
     {
-        Vector3 newVelocity = Velocity;
-        if (!IsOnFloor())
+        DebugDraw3D.ScopedConfig().SetThickness(1.0f);
+
+        walkCooldown = new Timer();
+        walkCooldown.Timeout += () => TakeStep();
+        AddChild(walkCooldown);
+        walkCooldown.Start(MOVE_TIME);
+    }
+
+    private void TakeStep()
+    {
+        Vector3 newPosition = Position;
+        GenericMap map = GetNode<GenericMap>(Map);
+
+        if (!path.IsEmpty())
         {
-            newVelocity.Y -= 9.81f*(float)delta;
+            newPosition.X = path[0].X;
+            newPosition.Z = path[0].Z;
+
+            // If we moved diagonally, we take sqrt(a^2+b^2) time instead of just a.
+            if (idPath[0].X != gridPosition.X && idPath[0].Y != gridPosition.Y)
+            {
+                walkCooldown.WaitTime = Math.Sqrt(Math.Pow(MOVE_TIME,2)+Math.Pow(MOVE_TIME,2));
+            }
+            else
+            {
+                walkCooldown.WaitTime = MOVE_TIME;
+            }
+            gridPosition = idPath[0];
+
+            if (path.Length > 1) DebugDraw3D.DrawPointPath(path,duration:(float)walkCooldown.WaitTime);
+
+            path = path.Skip(1).ToArray();
+            idPath = idPath.Skip(1).ToArray();
+        }
+        else
+        {
+            path = map.PointPath(gridPosition, destination);
+            idPath = map.IdPath(gridPosition, destination);
         }
 
-        if (Position.X != destination.X && Position.Z != destination.Y)
-        {
-            Vector2 pos2D = new Vector2(Position.X, Position.Z);
-            newVelocity.X = pos2D.AngleToPoint(destination) * MOVE_SPEED;
-            newVelocity.Z = pos2D.AngleToPoint(destination) * MOVE_SPEED;
-        }
+        Tween tween = GetTree().CreateTween();
+        tween.TweenProperty(
+            this, 
+            "position", 
+            newPosition, 
+            walkCooldown.WaitTime*0.75
+        ).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 
-        Velocity = newVelocity;
-        MoveAndSlide();
+        walkCooldown.Start();
     }
 }
