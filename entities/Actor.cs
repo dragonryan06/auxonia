@@ -30,6 +30,8 @@ public partial class Actor : CharacterBody3D
         AddChild(walkCooldown);
         walkCooldown.Start(MOVE_TIME);
 
+        gridPosition = GetNode<GenericMap>(Map).WorldToGrid(Position);
+
         Connect(
             CollisionObject3D.SignalName.InputEvent,
             new Callable(this, MethodName.OnInputEvent)

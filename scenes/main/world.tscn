@@ -64,4 +64,4 @@ ZoomCurve = ExtResource("3_ia2xw")
 [node name="Auxon" parent="." instance=ExtResource("4_pax3m")]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 2, 3.4, 2)
 MOVE_TIME = 0.5
-Destination = Vector2i(16, 16)
+Destination = Vector2i(116, 98)
