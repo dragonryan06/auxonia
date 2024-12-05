@@ -6,9 +6,9 @@ _data = [Vector2(0, 8.43956), 0.0, 0.0, 0, 0, Vector2(1, 64), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_85tou"]
-min_value = -128.0
+min_value = -148.0
 max_value = 0.0
-_data = [Vector2(0.247253, 0), 0.0, 0.0, 0, 0, Vector2(1, -128), 0.0, 0.0, 0, 0]
+_data = [Vector2(0.247253, 0), 0.0, 0.0, 0, 0, Vector2(1, -148), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_pfo17"]

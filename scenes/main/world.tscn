@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://dlp0g3ilglgcf"]
+[gd_scene load_steps=11 format=3 uid="uid://dlp0g3ilglgcf"]
 
 [ext_resource type="Shader" path="res://scenes/main/checkerboard.gdshader" id="1_pvel2"]
 [ext_resource type="Script" path="res://scenes/main/RtsCam.cs" id="2_4bvs1"]
 [ext_resource type="Texture2D" uid="uid://dyy0u03ocsdcc" path="res://scenes/main/camera_zoom_curve.tres" id="3_ia2xw"]
+[ext_resource type="PackedScene" uid="uid://c7n37hcksewc3" path="res://entities/robotic/auxon.tscn" id="4_pax3m"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_elpog"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -18,15 +19,17 @@ tonemap_mode = 2
 glow_enabled = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_12rrh"]
-size = Vector2(1024, 1024)
+size = Vector2(512, 512)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c2u1n"]
 render_priority = 0
 shader = ExtResource("1_pvel2")
-shader_parameter/DIMENSIONS = 1024
-shader_parameter/MINOR_CELL_SIZE = 8
-shader_parameter/MAJOR_CELL_SIZE = 32
+shader_parameter/DIMENSIONS = 512
+shader_parameter/MINOR_CELL_SIZE = 4
+shader_parameter/MAJOR_CELL_SIZE = 64
 shader_parameter/MAJOR_CELL_COLOR = Vector3(0.25, 0.25, 1)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_d8r4j"]
 
 [node name="World" type="Node3D"]
 
@@ -41,11 +44,21 @@ shadow_enabled = true
 mesh = SubResource("PlaneMesh_12rrh")
 material = SubResource("ShaderMaterial_c2u1n")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="Map"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/StaticBody3D"]
+shape = SubResource("WorldBoundaryShape3D_d8r4j")
+
 [node name="Pivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 150, 150)
 
 [node name="MainCamera" type="Camera3D" parent="Pivot"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
 current = true
+fov = 60.0
 script = ExtResource("2_4bvs1")
 ZoomCurve = ExtResource("3_ia2xw")
+
+[node name="Auxon" parent="." instance=ExtResource("4_pax3m")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -4.73656, 59.0384, 0)
+destination = Vector2(500, 128)
