@@ -50,6 +50,16 @@ public partial class GenericMap : CsgMesh3D
         );
     }
 
+    public void SetPointSolid(Vector2I point, bool solid)
+    {
+        navGrid.SetPointSolid(point, solid);
+    }
+
+    public bool IsPointSolid(Vector2I point)
+    {
+        return navGrid.IsPointSolid(point);
+    }
+
     private void OnInputEvent(Camera3D camera, InputEvent inputEvent, Vector3 eventPos, Vector3 eventNorm, int shapeIdx)
     {
         if (inputEvent is InputEventMouseButton mouse && mouse.ButtonIndex == MouseButton.Left && mouse.Pressed)

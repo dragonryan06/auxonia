@@ -63,7 +63,7 @@ public partial class Actor : CharacterBody3D
         Vector3 newPosition = Position;
         GenericMap map = GetNode<GenericMap>(Map);
 
-        if (!path.IsEmpty())
+        if (!path.IsEmpty() && (!map.IsPointSolid(idPath[0]) || idPath[0] == gridPosition))
         {
             newPosition.X = path[0].X;
             newPosition.Z = path[0].Z;
@@ -77,7 +77,9 @@ public partial class Actor : CharacterBody3D
             {
                 walkCooldown.WaitTime = MOVE_TIME;
             }
+            map.SetPointSolid(gridPosition, false);
             gridPosition = idPath[0];
+            map.SetPointSolid(gridPosition, true);
 
             if (path.Length > 1) DebugDraw3D.DrawPointPath(path,duration:(float)walkCooldown.WaitTime);
 
