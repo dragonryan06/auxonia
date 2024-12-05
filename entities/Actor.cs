@@ -6,13 +6,13 @@ using System.Linq;
 public partial class Actor : CharacterBody3D
 {
     [Export]
-    float MOVE_TIME = 1.0f;
+    private float MOVE_TIME = 1.0f;
 
     [Export]
-    NodePath Map = "../Map";
+    private NodePath Map = "../Map";
 
     [Export]
-    Vector2I destination = Vector2I.Zero;
+    private Vector2I Destination = Vector2I.Zero;
 
     private Vector2I gridPosition = Vector2I.Zero;
 
@@ -29,6 +29,31 @@ public partial class Actor : CharacterBody3D
         walkCooldown.Timeout += () => TakeStep();
         AddChild(walkCooldown);
         walkCooldown.Start(MOVE_TIME);
+
+        Connect(
+            CollisionObject3D.SignalName.InputEvent,
+            new Callable(this, MethodName.OnInputEvent)
+        );
+    }
+    
+    public void MoveTo(GenericMap map, Vector2I positionID)
+    {
+        Destination = positionID;
+        UpdatePath(map);
+    }
+
+    private void UpdatePath(GenericMap map)
+    {
+        if (map == null)
+        {
+            path = new Vector3[0];
+            idPath = new Vector2I[0];
+        }
+        else
+        {
+            path = map.PointPath(gridPosition, Destination);
+            idPath = map.IdPath(gridPosition, Destination);
+        }
     }
 
     private void TakeStep()
@@ -59,8 +84,7 @@ public partial class Actor : CharacterBody3D
         }
         else
         {
-            path = map.PointPath(gridPosition, destination);
-            idPath = map.IdPath(gridPosition, destination);
+            UpdatePath(map);
         }
 
         Tween tween = GetTree().CreateTween();
@@ -72,5 +96,13 @@ public partial class Actor : CharacterBody3D
         ).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 
         walkCooldown.Start();
+    }
+
+    private void OnInputEvent(Camera3D camera, InputEvent inputEvent, Vector3 eventPos, Vector3 eventNorm, int shapeIdx)
+    {
+        if (inputEvent is InputEventMouseButton mouse && mouse.ButtonIndex == MouseButton.Left && mouse.Pressed)
+        {
+            Game.selected = this;
+        }
     }
 }
