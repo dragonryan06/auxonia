@@ -95,13 +95,16 @@ public partial class Actor : CharacterBody3D
             UpdatePath(map);
         }
 
-        Tween tween = GetTree().CreateTween();
-        tween.TweenProperty(
-            this, 
-            "position", 
-            newPosition, 
-            walkCooldown.WaitTime*0.75
-        ).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+        if (Position != newPosition)
+        {
+            Tween tween = GetTree().CreateTween();
+            tween.TweenProperty(
+                this,
+                "transform",
+                Transform.LookingAt(newPosition).Translated(newPosition-Position),
+                walkCooldown.WaitTime*0.5
+            );
+        }
 
         walkCooldown.Start();
     }
