@@ -1,16 +1,18 @@
-using Godot;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public partial class Actor : CharacterBody3D
 {
+    [Signal]
+    public delegate void MoveEventHandler();
+    [Signal]
+    public delegate void RotateEventHandler(bool toLeft);
+
     [Export]
     private float MOVE_TIME = 1.0f;
-
     [Export]
     private NodePath Map = "../Map";
-
     [Export]
     private Vector2I Destination = Vector2I.Zero;
 
@@ -37,7 +39,7 @@ public partial class Actor : CharacterBody3D
             new Callable(this, MethodName.OnInputEvent)
         );
     }
-    
+
     public void MoveTo(GenericMap map, Vector2I positionID)
     {
         Destination = positionID;
@@ -60,53 +62,74 @@ public partial class Actor : CharacterBody3D
 
     private void TakeStep()
     {
-        Vector3 newPosition = Position;
         GenericMap map = GetNode<GenericMap>(Map);
 
-        if (!path.IsEmpty() && (!map.IsPointSolid(idPath[0]) || idPath[0] == gridPosition))
+        // Check if we can/should path to the next point
+        if (path?.Length > 1 && (!map.IsPointSolid(idPath[1]) || idPath[1] == gridPosition))
         {
-            newPosition.X = path[0].X;
-            newPosition.Z = path[0].Z;
-
-            // If we moved diagonally, we take sqrt(a^2+b^2) time instead of just a.
-            if (idPath[0].X != gridPosition.X && idPath[0].Y != gridPosition.Y)
-            {
-                walkCooldown.WaitTime = Math.Sqrt(Math.Pow(MOVE_TIME, 2) + Math.Pow(MOVE_TIME, 2));
-            }
-            else
-            {
-                walkCooldown.WaitTime = MOVE_TIME;
-            }
-            map.SetPointSolid(gridPosition, false);
-            gridPosition = idPath[0];
-            map.SetPointSolid(gridPosition, true);
-
             if (Game.DebugOverlay)
             {
-                if (path.Length > 1) DebugDraw3D.DrawPointPath(path, duration: (float)walkCooldown.WaitTime);
+                DebugDraw3D.DrawPointPath(path, duration: (float)walkCooldown.WaitTime);
                 DebugDraw3D.DrawLine(map.GridToWorld(gridPosition), map.GridToWorld(Destination), duration: (float)walkCooldown.WaitTime);
             }
 
-            path = path.Skip(1).ToArray();
-            idPath = idPath.Skip(1).ToArray();
+            float angleTo = Mathf.RadToDeg(((Vector2)gridPosition).AngleToPoint(new Vector2(idPath[1].X, idPath[1].Y)) + Rotation.Y);
+            // Adding +90 because AngleToPoint is relative to X axis, and our character faces Z
+            angleTo = Mathf.Wrap(angleTo + 90, -180, 180);
+
+            if (angleTo == 0)
+            {
+                // We are facing the point; move forwards.
+                Vector3 newPosition = Position;
+                newPosition.X = path[1].X;
+                newPosition.Z = path[1].Z;
+
+                // If we moved diagonally, we take sqrt(a^2+b^2) time instead of just a.
+                if (idPath[1].X != gridPosition.X && idPath[1].Y != gridPosition.Y)
+                {
+                    walkCooldown.WaitTime = Math.Sqrt(Math.Pow(MOVE_TIME, 2) + Math.Pow(MOVE_TIME, 2));
+                }
+                else
+                {
+                    walkCooldown.WaitTime = MOVE_TIME;
+                }
+                map.SetPointSolid(gridPosition, false);
+                gridPosition = idPath[1];
+                map.SetPointSolid(gridPosition, true);
+
+                Position = newPosition;
+
+                path = path.Skip(1).ToArray();
+                idPath = idPath.Skip(1).ToArray();
+
+                EmitSignal(SignalName.Move);
+            }
+            else if (angleTo < 0)
+            {
+                // The point is towards our right; turn.
+                Vector3 newRotation = RotationDegrees;
+                newRotation.Y += 45;
+                RotationDegrees = newRotation;
+
+                EmitSignal(SignalName.Rotate, false);
+            }
+            else
+            {
+                // The point is towards our left; turn.
+                Vector3 newRotation = RotationDegrees;
+                newRotation.Y -= 45;
+                RotationDegrees = newRotation;
+
+                EmitSignal(SignalName.Rotate, true);
+            }
+
+            walkCooldown.Start();
         }
+        // Try to find a new path
         else
         {
             UpdatePath(map);
         }
-
-        if (Position != newPosition)
-        {
-            Tween tween = GetTree().CreateTween();
-            tween.TweenProperty(
-                this,
-                "transform",
-                Transform.LookingAt(newPosition).Translated(newPosition-Position),
-                walkCooldown.WaitTime*0.5
-            );
-        }
-
-        walkCooldown.Start();
     }
 
     private void OnInputEvent(Camera3D camera, InputEvent inputEvent, Vector3 eventPos, Vector3 eventNorm, int shapeIdx)

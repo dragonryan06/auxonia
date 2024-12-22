@@ -64,14 +64,4 @@ ZoomCurve = ExtResource("3_ia2xw")
 [node name="ADAM_001" parent="." instance=ExtResource("4_pax3m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2.1, 2)
 MOVE_TIME = 0.5
-Destination = Vector2i(116, 98)
-
-[node name="STEVE_001" parent="." instance=ExtResource("4_pax3m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.1, 6)
-MOVE_TIME = 0.5
-Destination = Vector2i(50, 21)
-
-[node name="CLAIRE_001" parent="." instance=ExtResource("4_pax3m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2.1, -6)
-MOVE_TIME = 0.5
-Destination = Vector2i(110, 46)
+Destination = Vector2i(64, 64)
