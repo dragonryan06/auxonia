@@ -4,10 +4,15 @@ using Godot;
 
 public partial class Actor : CharacterBody3D
 {
-    [Signal]
-    public delegate void MoveEventHandler();
-    [Signal]
-    public delegate void RotateEventHandler(bool toLeft);
+    public enum NavState
+    {
+        IDLE,
+        NAVIGATING, // Navigating, but not currently moving or turning
+        MOVING,
+        TURNING_LEFT,
+        TURNING_RIGHT
+    }
+    public NavState navstate = NavState.IDLE;
 
     [Export]
     private float MOVE_TIME = 1.0f;
@@ -21,7 +26,7 @@ public partial class Actor : CharacterBody3D
     private Vector3[] path;
     private Vector2I[] idPath;
 
-    private Timer walkCooldown;
+    public Timer walkCooldown;
 
     public override void _Ready()
     {
@@ -57,6 +62,16 @@ public partial class Actor : CharacterBody3D
         {
             path = map.PointPath(gridPosition, Destination);
             idPath = map.IdPath(gridPosition, Destination);
+            if (path.Length <= 1)
+            {
+                walkCooldown.Stop();
+                navstate = NavState.IDLE;
+            }
+            else
+            {
+                walkCooldown.Start();
+                navstate = NavState.NAVIGATING;
+            }
         }
     }
 
@@ -64,15 +79,11 @@ public partial class Actor : CharacterBody3D
     {
         GenericMap map = GetNode<GenericMap>(Map);
 
+        Action navCallback = () => navstate = NavState.NAVIGATING;
+
         // Check if we can/should path to the next point
         if (path?.Length > 1 && (!map.IsPointSolid(idPath[1]) || idPath[1] == gridPosition))
         {
-            if (Game.DebugOverlay)
-            {
-                DebugDraw3D.DrawPointPath(path, duration: (float)walkCooldown.WaitTime);
-                DebugDraw3D.DrawLine(map.GridToWorld(gridPosition), map.GridToWorld(Destination), duration: (float)walkCooldown.WaitTime);
-            }
-
             float angleTo = Mathf.RadToDeg(((Vector2)gridPosition).AngleToPoint(new Vector2(idPath[1].X, idPath[1].Y)) + Rotation.Y);
             // Adding +90 because AngleToPoint is relative to X axis, and our character faces Z
             angleTo = Mathf.Wrap(angleTo + 90, -180, 180);
@@ -97,32 +108,61 @@ public partial class Actor : CharacterBody3D
                 gridPosition = idPath[1];
                 map.SetPointSolid(gridPosition, true);
 
-                Position = newPosition;
+                navstate = NavState.MOVING;
+                Tween tween = GetTree().CreateTween();
+                tween.TweenProperty(
+                    this,
+                    "position",
+                    newPosition,
+                    walkCooldown.WaitTime
+                ).SetTrans(
+                    Tween.TransitionType.Sine
+                ).SetEase(
+                    Tween.EaseType.InOut
+                );
+                tween.TweenCallback(Callable.From(navCallback));
 
                 path = path.Skip(1).ToArray();
                 idPath = idPath.Skip(1).ToArray();
-
-                EmitSignal(SignalName.Move);
             }
             else if (angleTo < 0)
             {
-                // The point is towards our right; turn.
-                Vector3 newRotation = RotationDegrees;
-                newRotation.Y += 45;
-                RotationDegrees = newRotation;
-
-                EmitSignal(SignalName.Rotate, false);
+                // Turn right
+                walkCooldown.WaitTime = MOVE_TIME;
+                navstate = NavState.TURNING_RIGHT;
+                Tween tween = GetTree().CreateTween();
+                tween.TweenProperty(
+                    this,
+                    "rotation_degrees",
+                    new Vector3(RotationDegrees.X,RotationDegrees.Y+45,RotationDegrees.Z),
+                    walkCooldown.WaitTime
+                ).SetTrans(
+                    Tween.TransitionType.Sine
+                ).SetEase(Tween.EaseType.InOut);
+                tween.TweenCallback(Callable.From(navCallback));
             }
             else
             {
-                // The point is towards our left; turn.
-                Vector3 newRotation = RotationDegrees;
-                newRotation.Y -= 45;
-                RotationDegrees = newRotation;
-
-                EmitSignal(SignalName.Rotate, true);
+                // Turn left
+                walkCooldown.WaitTime = MOVE_TIME;
+                navstate = NavState.TURNING_LEFT;
+                Tween tween = GetTree().CreateTween();
+                tween.TweenProperty(
+                    this,
+                    "rotation_degrees",
+                    new Vector3(RotationDegrees.X,RotationDegrees.Y-45,RotationDegrees.Z),
+                    walkCooldown.WaitTime
+                ).SetTrans(
+                    Tween.TransitionType.Sine
+                ).SetEase(Tween.EaseType.InOut);
+                tween.TweenCallback(Callable.From(navCallback));
             }
 
+            if (Game.DebugOverlay && path?.Length > 1)
+            {
+                DebugDraw3D.DrawPointPath(path, duration: (float)walkCooldown.WaitTime);
+                DebugDraw3D.DrawLine(map.GridToWorld(gridPosition), map.GridToWorld(Destination), duration: (float)walkCooldown.WaitTime);
+            }
             walkCooldown.Start();
         }
         // Try to find a new path

@@ -62,6 +62,5 @@ script = ExtResource("2_4bvs1")
 ZoomCurve = ExtResource("3_ia2xw")
 
 [node name="ADAM_001" parent="." instance=ExtResource("4_pax3m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2.1, 2)
-MOVE_TIME = 0.5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2.5, 2)
 Destination = Vector2i(64, 64)
