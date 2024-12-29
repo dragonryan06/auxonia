@@ -1,7 +1,7 @@
 shader_type spatial;
 
 uniform int DIMENSIONS = 1024;
-uniform int MINOR_CELL_SIZE = 8;
+uniform int MINOR_CELL_SIZE = 4;
 uniform int MAJOR_CELL_SIZE = 64;
 uniform vec3 MAJOR_CELL_COLOR = vec3(0.1,0.5,1.0);
 

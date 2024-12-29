@@ -3,12 +3,13 @@ using System;
 
 public partial class RtsCam : Camera3D
 {
+    // feeling kinda lazy right now but these values would actually be sensible if the velocity was instead multiplied by delta when applied
     [Export]
-    private float MOVE_SPEED = 0.25f;
+    private float MOVE_SPEED = 0.075f;
     [Export]
-    private float ZOOM_SPEED = 0.1f;
+    private float ZOOM_SPEED = 0.05f;
     [Export]
-    private float MAX_VELOCITY = 10.0f;
+    private float MAX_VELOCITY = 4.0f;
     [Export]
     private CurveXyzTexture ZoomCurve;
 
@@ -36,9 +37,6 @@ public partial class RtsCam : Camera3D
                 newPosition.Y = -ZoomCurve.CurveY.Sample(-_zoomPosition);
                 newRotation.X = (3.0f * Mathf.Pi / 2.0f) - ZoomCurve.CurveZ.Sample(-_zoomPosition);
             }
-            GD.Print(_zoomPosition);
-            GD.Print(newPosition);
-            GD.Print(newRotation);
             Position = newPosition;
             Rotation = newRotation;
         }
