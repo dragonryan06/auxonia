@@ -21,7 +21,8 @@ public partial class Actor : CharacterBody3D
     [Export]
     private Vector2I Destination = Vector2I.Zero;
 
-    private Vector2I gridPosition = Vector2I.Zero;
+    public Vector2I GridPosition = Vector2I.Zero;
+    private Vector2I lastGridPosition = Vector2I.Zero;
 
     private Vector3[] path;
     private Vector2I[] idPath;
@@ -37,7 +38,7 @@ public partial class Actor : CharacterBody3D
         AddChild(walkCooldown);
         walkCooldown.Start(MOVE_TIME);
 
-        gridPosition = GetNode<GenericMap>(Map).WorldToGrid(Position);
+        GridPosition = GetNode<GenericMap>(Map).WorldToGrid(Position);
 
         Connect(
             CollisionObject3D.SignalName.InputEvent,
@@ -60,8 +61,8 @@ public partial class Actor : CharacterBody3D
         }
         else
         {
-            path = map.PointPath(gridPosition, Destination);
-            idPath = map.IdPath(gridPosition, Destination);
+            path = map.PointPath(GridPosition, Destination);
+            idPath = map.IdPath(GridPosition, Destination);
             if (path.Length <= 1)
             {
                 walkCooldown.Stop();
@@ -79,12 +80,12 @@ public partial class Actor : CharacterBody3D
     {
         GenericMap map = GetNode<GenericMap>(Map);
 
-        Action navCallback = () => navstate = NavState.NAVIGATING;
+        Action navCallback = () => navstate = NavState.NAVIGATING; map.SetPointSolid(lastGridPosition, false);
 
         // Check if we can/should path to the next point
-        if (path?.Length > 1 && (!map.IsPointSolid(idPath[1]) || idPath[1] == gridPosition))
+        if (path?.Length > 1 && (!map.IsPointSolid(idPath[1]) || idPath[1] == GridPosition))
         {
-            float angleTo = Mathf.RadToDeg(((Vector2)gridPosition).AngleToPoint(new Vector2(idPath[1].X, idPath[1].Y)) + Rotation.Y);
+            float angleTo = Mathf.RadToDeg(((Vector2)GridPosition).AngleToPoint(new Vector2(idPath[1].X, idPath[1].Y)) + Rotation.Y);
             // Adding +90 because AngleToPoint is relative to X axis, and our character faces Z
             angleTo = Mathf.Wrap(angleTo + 90, -180, 180);
 
@@ -96,7 +97,7 @@ public partial class Actor : CharacterBody3D
                 newPosition.Z = path[1].Z;
 
                 // If we moved diagonally, we take sqrt(a^2+b^2) time instead of just a.
-                if (idPath[1].X != gridPosition.X && idPath[1].Y != gridPosition.Y)
+                if (idPath[1].X != GridPosition.X && idPath[1].Y != GridPosition.Y)
                 {
                     walkCooldown.WaitTime = Math.Sqrt(Math.Pow(MOVE_TIME, 2) + Math.Pow(MOVE_TIME, 2));
                 }
@@ -104,9 +105,9 @@ public partial class Actor : CharacterBody3D
                 {
                     walkCooldown.WaitTime = MOVE_TIME;
                 }
-                map.SetPointSolid(gridPosition, false);
-                gridPosition = idPath[1];
-                map.SetPointSolid(gridPosition, true);
+                lastGridPosition = GridPosition;
+                GridPosition = idPath[1];
+                map.SetPointSolid(GridPosition, true);
 
                 navstate = NavState.MOVING;
                 Tween tween = GetTree().CreateTween();
@@ -161,7 +162,7 @@ public partial class Actor : CharacterBody3D
             if (Game.DebugOverlay && path?.Length > 1)
             {
                 DebugDraw3D.DrawPointPath(path, duration: (float)walkCooldown.WaitTime,points_color:Colors.DarkCyan,lines_color:Colors.Cyan);
-                DebugDraw3D.DrawLine(map.GridToWorld(gridPosition), map.GridToWorld(Destination), Colors.Green,(float)walkCooldown.WaitTime);
+                DebugDraw3D.DrawLine(map.GridToWorld(GridPosition), map.GridToWorld(Destination), Colors.Green,(float)walkCooldown.WaitTime);
             }
             walkCooldown.Start();
         }

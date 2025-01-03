@@ -23,6 +23,17 @@ public partial class GenericMap : MeshInstance3D
             CollisionObject3D.SignalName.InputEvent, 
             new Callable(this, MethodName.OnInputEvent)
         );
+
+        foreach (Vector3I cell in GetNode<GridMap>("GridMap").GetUsedCells())
+        {
+            // AStarGrid2D is corner-aligned, GridMap is center aligned
+            navGrid.SetPointSolid(new Vector2I(cell.X + MapDimensions.X / 2, cell.Z + MapDimensions.Y / 2));
+        }
+
+        foreach (Node node in GetChildren())
+        {
+            if (node is Actor actor) navGrid.SetPointSolid(actor.GridPosition);
+        }
     }
 
     public override void _Process(double delta)
