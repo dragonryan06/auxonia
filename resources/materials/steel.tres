@@ -1,0 +1,31 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://bggfst32afoay"]
+
+[ext_resource type="Shader" path="res://resources/shaders/outline.gdshader" id="1_gbleb"]
+[ext_resource type="Shader" path="res://resources/shaders/toon.gdshader" id="2_t7yx1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nxgnq"]
+render_priority = 0
+shader = ExtResource("1_gbleb")
+shader_parameter/outline_color = null
+shader_parameter/outline_width = 2.0
+
+[sub_resource type="Gradient" id="Gradient_gt8op"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.5, 0.5, 0.525, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_iytqh"]
+gradient = SubResource("Gradient_gt8op")
+
+[resource]
+render_priority = 0
+next_pass = SubResource("ShaderMaterial_nxgnq")
+shader = ExtResource("2_t7yx1")
+shader_parameter/ToonRampOffset = 0.5
+shader_parameter/ToonRampSmoothness = 0.05
+shader_parameter/ToonRampTinting = Color(0, 0, 0, 1)
+shader_parameter/SubSurfDistortion = 1.0
+shader_parameter/SubSurfTint = null
+shader_parameter/SubSurfBrightness = 3.0
+shader_parameter/SubSurfCutoff = 0.5
+shader_parameter/SubSurfSmoothness = 0.05
+shader_parameter/Texture = SubResource("GradientTexture1D_iytqh")
