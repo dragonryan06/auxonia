@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class GenericMap : CsgMesh3D
+public partial class GenericMap : MeshInstance3D
 {
     [Export]
     private Vector2I MapDimensions = new Vector2I(128,128);

@@ -1,0 +1,53 @@
+[gd_scene load_steps=10 format=3 uid="uid://dfqpgltclapsp"]
+
+[ext_resource type="Shader" path="res://resources/shaders/checkerboard.gdshader" id="1_x6t2j"]
+[ext_resource type="Script" path="res://scenes/GenericMap.cs" id="2_0syef"]
+[ext_resource type="PackedScene" uid="uid://c7n37hcksewc3" path="res://entities/robotic/auxon.tscn" id="3_3lub3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c2u1n"]
+render_priority = 0
+shader = ExtResource("1_x6t2j")
+shader_parameter/DIMENSIONS = 512
+shader_parameter/MINOR_CELL_SIZE = 4
+shader_parameter/MAJOR_CELL_SIZE = 64
+shader_parameter/MAJOR_CELL_COLOR = Vector3(0.25, 0.25, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_12rrh"]
+size = Vector2(512, 512)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_d8r4j"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_elpog"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_cotgx"]
+sky_material = SubResource("ProceduralSkyMaterial_elpog")
+
+[sub_resource type="Environment" id="Environment_jp0rv"]
+background_mode = 2
+sky = SubResource("Sky_cotgx")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Level" type="MeshInstance3D"]
+material_override = SubResource("ShaderMaterial_c2u1n")
+mesh = SubResource("PlaneMesh_12rrh")
+script = ExtResource("2_0syef")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("WorldBoundaryShape3D_d8r4j")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_jp0rv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="ADAM_001" parent="." instance=ExtResource("3_3lub3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2.5, 2)
+Map = NodePath("..")
+Destination = Vector2i(64, 64)

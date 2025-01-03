@@ -1,55 +1,12 @@
-[gd_scene load_steps=12 format=3 uid="uid://dlp0g3ilglgcf"]
+[gd_scene load_steps=5 format=3 uid="uid://dlp0g3ilglgcf"]
 
-[ext_resource type="Shader" path="res://resources/shaders/checkerboard.gdshader" id="1_pvel2"]
+[ext_resource type="Script" path="res://scenes/main/World.cs" id="1_cna5d"]
 [ext_resource type="Script" path="res://scenes/main/RtsCam.cs" id="2_4bvs1"]
-[ext_resource type="Script" path="res://scenes/GenericMap.cs" id="2_f263i"]
 [ext_resource type="Texture2D" uid="uid://dyy0u03ocsdcc" path="res://resources/camera_zoom_curve.tres" id="3_ia2xw"]
-[ext_resource type="PackedScene" uid="uid://c7n37hcksewc3" path="res://entities/robotic/auxon.tscn" id="4_pax3m"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_elpog"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-
-[sub_resource type="Sky" id="Sky_cotgx"]
-sky_material = SubResource("ProceduralSkyMaterial_elpog")
-
-[sub_resource type="Environment" id="Environment_jp0rv"]
-background_mode = 2
-sky = SubResource("Sky_cotgx")
-tonemap_mode = 2
-glow_enabled = true
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_12rrh"]
-size = Vector2(512, 512)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_c2u1n"]
-render_priority = 0
-shader = ExtResource("1_pvel2")
-shader_parameter/DIMENSIONS = 512
-shader_parameter/MINOR_CELL_SIZE = 4
-shader_parameter/MAJOR_CELL_SIZE = 64
-shader_parameter/MAJOR_CELL_COLOR = Vector3(0.25, 0.25, 1)
-
-[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_d8r4j"]
+[ext_resource type="PackedScene" uid="uid://b14s2rs7ukws2" path="res://scenes/levels/level_test.tscn" id="4_gejis"]
 
 [node name="World" type="Node3D"]
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_jp0rv")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
-shadow_enabled = true
-
-[node name="Map" type="CSGMesh3D" parent="."]
-mesh = SubResource("PlaneMesh_12rrh")
-material = SubResource("ShaderMaterial_c2u1n")
-script = ExtResource("2_f263i")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Map"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/StaticBody3D"]
-shape = SubResource("WorldBoundaryShape3D_d8r4j")
+script = ExtResource("1_cna5d")
 
 [node name="Pivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 150, 150)
@@ -61,6 +18,4 @@ fov = 60.0
 script = ExtResource("2_4bvs1")
 ZoomCurve = ExtResource("3_ia2xw")
 
-[node name="ADAM_001" parent="." instance=ExtResource("4_pax3m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2.5, 2)
-Destination = Vector2i(64, 64)
+[node name="Level" type="MeshInstance3D" parent="." instance=ExtResource("4_gejis")]
