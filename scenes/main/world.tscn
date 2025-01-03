@@ -1,7 +1,8 @@
 [gd_scene load_steps=12 format=3 uid="uid://dlp0g3ilglgcf"]
 
-[ext_resource type="Shader" path="res://scenes/main/checkerboard.gdshader" id="1_pvel2"]
+[ext_resource type="Shader" path="res://resources/shaders/checkerboard.gdshader" id="1_pvel2"]
 [ext_resource type="Script" path="res://scenes/main/RtsCam.cs" id="2_4bvs1"]
+[ext_resource type="Script" path="res://scenes/GenericMap.cs" id="2_f263i"]
 [ext_resource type="Texture2D" uid="uid://dyy0u03ocsdcc" path="res://resources/camera_zoom_curve.tres" id="3_ia2xw"]
 [ext_resource type="PackedScene" uid="uid://c7n37hcksewc3" path="res://entities/robotic/auxon.tscn" id="4_pax3m"]
 
