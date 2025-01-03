@@ -30,7 +30,7 @@ public partial class Actor : CharacterBody3D
 
     public override void _Ready()
     {
-        DebugDraw3D.ScopedConfig().SetThickness(1.0f);
+        DebugDraw3D.ScopedConfig().SetThickness(0.5f);
 
         walkCooldown = new Timer();
         walkCooldown.Timeout += () => TakeStep();
@@ -160,8 +160,8 @@ public partial class Actor : CharacterBody3D
 
             if (Game.DebugOverlay && path?.Length > 1)
             {
-                DebugDraw3D.DrawPointPath(path, duration: (float)walkCooldown.WaitTime);
-                DebugDraw3D.DrawLine(map.GridToWorld(gridPosition), map.GridToWorld(Destination), duration: (float)walkCooldown.WaitTime);
+                DebugDraw3D.DrawPointPath(path, duration: (float)walkCooldown.WaitTime,points_color:Colors.DarkCyan,lines_color:Colors.Cyan);
+                DebugDraw3D.DrawLine(map.GridToWorld(gridPosition), map.GridToWorld(Destination), Colors.Green,(float)walkCooldown.WaitTime);
             }
             walkCooldown.Start();
         }

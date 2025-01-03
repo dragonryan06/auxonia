@@ -25,6 +25,21 @@ public partial class GenericMap : MeshInstance3D
         );
     }
 
+    public override void _Process(double delta)
+    {
+        if (Game.DebugOverlay)
+        {
+            for (int y = 0; y < MapDimensions.Y; y++)
+            {
+                for (int x = 0; x < MapDimensions.X; x++)
+                {
+                    Vector2I point = new Vector2I(x, y);
+                    if (navGrid.IsPointSolid(point)) DebugDraw3D.DrawAabb(new Aabb(GridToWorld(point)-Vector3.One+Vector3.Up,new Vector3(2,2,2)),Colors.Red);
+                }
+            }
+        }
+    }
+
     public Vector3[] PointPath(Vector2I fromID, Vector2I toID)
     {
         List<Vector3> path3D = new List<Vector3>();
@@ -73,7 +88,7 @@ public partial class GenericMap : MeshInstance3D
     {
         if (inputEvent is InputEventMouseButton mouse && mouse.ButtonIndex == MouseButton.Left && mouse.Pressed)
         {
-            DebugDraw3D.DrawRay(eventPos, eventNorm,4,duration:10);
+            DebugDraw3D.DrawRay(eventPos,eventNorm,4,Colors.HotPink,10);
             if (Game.Selected != null) Game.Selected.MoveTo(this, WorldToGrid(eventPos));
         }
     }
