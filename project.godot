@@ -27,12 +27,13 @@ project/assembly_name="Auxonia"
 
 folder_colors={
 "res://entities/": "red",
-"res://globals/": "orange",
+"res://globals/": "green",
 "res://menus/": "yellow",
-"res://scenes/": "green",
+"res://resources/": "purple",
+"res://resources/shaders/": "blue",
+"res://scenes/": "orange",
 "res://scenes/main/": "red",
-"res://ui/": "teal",
-"res://ui/assets/": "red"
+"res://ui/": "yellow"
 }
 
 [input]

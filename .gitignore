@@ -2,3 +2,6 @@
 .godot/
 /android/
 .vs/
+
+# Files in here keep getting auto-updated by Godot (i think) and its annoying.
+/addons/debug_draw_3d/libs
