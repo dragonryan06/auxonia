@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://beherx6a0jg5w"]
+
+[ext_resource type="Shader" path="res://resources/shaders/outline.gdshader" id="1_wfyiv"]
+[ext_resource type="Shader" path="res://resources/shaders/toon.gdshader" id="2_mbcfj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fa2ib"]
+render_priority = 0
+shader = ExtResource("1_wfyiv")
+shader_parameter/outline_color = null
+shader_parameter/outline_width = 1.0
+
+[resource]
+render_priority = 0
+next_pass = SubResource("ShaderMaterial_fa2ib")
+shader = ExtResource("2_mbcfj")
+shader_parameter/ToonRampOffset = 0.85
+shader_parameter/ToonRampSmoothness = 0.5
+shader_parameter/ToonRampTinting = Color(0, 0, 0, 1)
+shader_parameter/SubSurfDistortion = 1.0
+shader_parameter/SubSurfTint = null
+shader_parameter/SubSurfBrightness = 3.0
+shader_parameter/SubSurfCutoff = 0.5
+shader_parameter/SubSurfSmoothness = 0.05
