@@ -9,7 +9,7 @@ public partial class GenericMap : MeshInstance3D
     public Vector2I MapDimensions = new Vector2I(128,128);
 
     [Export]
-    private Vector2I CellSize = new Vector2I(4,4);
+    public Vector2I CellSize = new Vector2I(4,4);
 
     private AStarGrid2D navGrid = new AStarGrid2D();
 
@@ -24,10 +24,9 @@ public partial class GenericMap : MeshInstance3D
             new Callable(this, MethodName.OnInputEvent)
         );
 
-        foreach (Vector3I cell in GetNode<GridMap>("GridMap").GetUsedCells())
+        foreach (Vector2I cell in GetNode<GameBoard>("GameBoard").GetUsedCells())
         {
-            // AStarGrid2D is corner-aligned, GridMap is center aligned
-            navGrid.SetPointSolid(new Vector2I(cell.X + MapDimensions.X / 2, cell.Z + MapDimensions.Y / 2));
+            navGrid.SetPointSolid(cell);
         }
 
         foreach (Node node in GetChildren())
@@ -101,6 +100,14 @@ public partial class GenericMap : MeshInstance3D
         {
             DebugDraw3D.DrawRay(eventPos,eventNorm,4,Colors.HotPink,10);
             if (Game.Selected != null) Game.Selected.MoveTo(this, WorldToGrid(eventPos));
+            else
+            {
+                TestItemObject testItem = new TestItemObject();
+                testItem.EntityName = "TestItemObject";
+                testItem.Type = ItemType.Nothing;
+                testItem.Quantity = 1;
+                GetNode<GameBoard>("GameBoard").PlaceItem(WorldToGrid(eventPos), testItem);
+            }
         }
     }
 }

@@ -1,7 +1,8 @@
 using Godot;
 using System;
+using System.Linq;
 
-public partial class GameBoard : GridMap
+public partial class GameBoard : Node
 {
     private enum BoardMeshes
     {
@@ -16,23 +17,36 @@ public partial class GameBoard : GridMap
     // As opposed to the godot collection of the same name...
     private System.Collections.Generic.Dictionary<Vector2I, IBoardObject> boardData;
 
-	public void PlaceObject(Vector2I pos, IBoardObject obj)
+	public bool PlaceItem(Vector2I pos, IItem item)
 	{
-		boardData.Add(pos, obj);
-		
-		if (obj is ItemPile itemPile)
+		if (boardData.TryGetValue(pos, out IBoardObject existing))
 		{
-			switch(itemPile.Type)
+			if (existing is ItemPile)
 			{
-				case ItemType.Nothing:
-				{
-					// Just thinking... eventually we will need many GridMaps under this class, especially if you want, for example, steel ingots and nothing ingots having different materials
-					// I wonder if then like every item would need a separate GridMap??? Why do GridMaps suck so much...
-					SetCellItem(new Vector3I(pos.X - map.MapDimensions.X / 2, 0, pos.Y - map.MapDimensions.Y / 2), (int)BoardMeshes.Ingots);
-					break;
-				}
+				// Stack item into this pile
+				GD.Print("Stacked item into existing pile");
+				return true;
 			}
+			else return false;
 		}
+		else
+		{
+			ItemPile newPile = new ItemPile();
+			newPile.GridPosition = pos;
+			newPile.Position = map.GridToWorld(pos);
+			newPile.FromItem(item);
+			map.SetPointSolid(pos, true);
+			boardData.Add(pos, newPile);
+			AddChild(newPile);
+			return true;
+		}
+		
+		
+	}
+
+	public Vector2I[] GetUsedCells()
+	{
+		return boardData.Keys.ToArray();
 	}
 
 	public IBoardObject PopAt(Vector2I pos)
@@ -50,5 +64,7 @@ public partial class GameBoard : GridMap
 	public override void _Ready()
 	{
 		map = GetParent<GenericMap>();
-	}
+		boardData = new System.Collections.Generic.Dictionary<Vector2I, IBoardObject>();
+
+    }
 }

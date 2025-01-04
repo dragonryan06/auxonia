@@ -7,8 +7,12 @@ public partial class Game : Node
 
     public static bool DebugOverlay { set; get; }
 
+    public static MeshLibrary ItemPileMeshes;
+
     public override void _Ready()
     {
+        ItemPileMeshes = GD.Load<MeshLibrary>("res://resources/models/testmeshlib.tres");
+
         DebugOverlay = false;
     }
 

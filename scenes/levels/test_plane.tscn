@@ -1,9 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://dfqpgltclapsp"]
+[gd_scene load_steps=11 format=3 uid="uid://dfqpgltclapsp"]
 
 [ext_resource type="Shader" path="res://resources/shaders/checkerboard.gdshader" id="1_x6t2j"]
 [ext_resource type="Script" path="res://scenes/GenericMap.cs" id="2_0syef"]
 [ext_resource type="PackedScene" uid="uid://c7n37hcksewc3" path="res://entities/robotic/auxon.tscn" id="3_3lub3"]
-[ext_resource type="MeshLibrary" uid="uid://korl7vnrjp0q" path="res://resources/models/testmeshlib.tres" id="3_qwh78"]
 [ext_resource type="Script" path="res://scenes/GameBoard.cs" id="4_pcjk3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c2u1n"]
@@ -49,10 +48,7 @@ environment = SubResource("Environment_jp0rv")
 transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
 
-[node name="GridMap" type="GridMap" parent="."]
-mesh_library = ExtResource("3_qwh78")
-cell_size = Vector3(4, 4, 4)
-cell_center_y = false
+[node name="GameBoard" type="Node" parent="."]
 script = ExtResource("4_pcjk3")
 metadata/_editor_floor_ = Vector3(0, 0, 0)
 
