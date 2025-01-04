@@ -27,6 +27,7 @@ project/assembly_name="Auxonia"
 
 folder_colors={
 "res://entities/": "red",
+"res://entities/item/": "yellow",
 "res://globals/": "green",
 "res://menus/": "yellow",
 "res://resources/": "purple",

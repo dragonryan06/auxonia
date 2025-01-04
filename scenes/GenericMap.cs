@@ -6,7 +6,7 @@ using System.Linq;
 public partial class GenericMap : MeshInstance3D
 {
     [Export]
-    private Vector2I MapDimensions = new Vector2I(128,128);
+    public Vector2I MapDimensions = new Vector2I(128,128);
 
     [Export]
     private Vector2I CellSize = new Vector2I(4,4);
