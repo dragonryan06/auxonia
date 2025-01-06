@@ -4,6 +4,7 @@ using System;
 public enum ItemType
 {
     Nothing,
+    OreIron,
     IngotSteel
 }
 

@@ -16,6 +16,7 @@ public partial class GameBoard : Node
 
     // As opposed to the godot collection of the same name...
     private System.Collections.Generic.Dictionary<Vector2I, IBoardObject> boardData;
+	private System.Collections.Generic.Dictionary<Rect2I, IBoardZone> boardZones;
 
 	public bool PlaceItem(Vector2I pos, IItem item)
 	{
@@ -65,6 +66,18 @@ public partial class GameBoard : Node
 	{
 		map = GetParent<GenericMap>();
 		boardData = new System.Collections.Generic.Dictionary<Vector2I, IBoardObject>();
+		boardZones = new System.Collections.Generic.Dictionary<Rect2I, IBoardZone>();
 
+    }
+
+    public override void _Process(double delta)
+    {
+        if (Game.DebugOverlay)
+        {
+            foreach (Rect2I rect in boardZones.Keys)
+			{
+				DebugDraw3D.DrawAabb(new Aabb(map.GridToWorld(rect.Position), map.GridToWorld(rect.Size)), Colors.Yellow);
+			}
+        }
     }
 }
