@@ -15,6 +15,13 @@ public interface IItem
     public int Quantity { get; set; }
 }
 
+public class OreChunk : IItem
+{
+    public string EntityName { get; set; }
+    public ItemType Type { get; set; }
+    public int Quantity { get; set; }
+}
+
 public class TestItemObject : IItem
 {
     public string EntityName { get; set; }

@@ -68,6 +68,10 @@ public partial class GameBoard : Node
 		boardData = new System.Collections.Generic.Dictionary<Vector2I, IBoardObject>();
 		boardZones = new System.Collections.Generic.Dictionary<Rect2I, IBoardZone>();
 
+		MiningZone testMineZone = new MiningZone();
+		testMineZone.Bounds = new Rect2I(80, 64, 16, 16);
+		testMineZone.Board = this;
+		boardZones.Add(testMineZone.Bounds, testMineZone);
     }
 
     public override void _Process(double delta)
@@ -76,7 +80,11 @@ public partial class GameBoard : Node
         {
             foreach (Rect2I rect in boardZones.Keys)
 			{
-				DebugDraw3D.DrawAabb(new Aabb(map.GridToWorld(rect.Position), map.GridToWorld(rect.Size)), Colors.Yellow);
+				DebugDraw3D.DrawAabb(
+					new Aabb(map.GridToWorld(rect.Position) - new Vector3(map.CellSize.X/2.0f, 0, map.CellSize.Y/2.0f), 
+					new Vector3(rect.Size.X*map.CellSize.X, 0.25f, rect.Size.Y*map.CellSize.Y)), 
+					Colors.Yellow
+				);
 			}
         }
     }

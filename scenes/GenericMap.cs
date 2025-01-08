@@ -70,17 +70,17 @@ public partial class GenericMap : MeshInstance3D
     public Vector2I WorldToGrid(Vector3 pos)
     {
         return new Vector2I(
-            (int)Math.Round(((pos.X - 2.0f) / CellSize.X) + (MapDimensions.X * 0.5f), 0),
-            (int)Math.Round(((pos.Z - 2.0f) / CellSize.Y) + (MapDimensions.Y * 0.5f), 0)
+            (int)Math.Round(((pos.X - CellSize.X/2.0f) / CellSize.X) + (MapDimensions.X * 0.5f), 0),
+            (int)Math.Round(((pos.Z - CellSize.Y/2.0f) / CellSize.Y) + (MapDimensions.Y * 0.5f), 0)
         );
     }
 
     public Vector3 GridToWorld(Vector2I grid)
     {
         return new Vector3(
-            ((grid.X - MapDimensions.X * 0.5f) * CellSize.X) + 2.0f,
+            ((grid.X - MapDimensions.X * 0.5f) * CellSize.X) + CellSize.X/2.0f,
             0.0f,
-            ((grid.Y - MapDimensions.Y * 0.5f) * CellSize.Y) + 2.0f
+            ((grid.Y - MapDimensions.Y * 0.5f) * CellSize.Y) + CellSize.Y/2.0f
         );
     }
 

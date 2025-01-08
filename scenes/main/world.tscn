@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dyy0u03ocsdcc" path="res://resources/camera_zoom_curve.tres" id="3_ia2xw"]
 [ext_resource type="PackedScene" uid="uid://dfqpgltclapsp" path="res://scenes/levels/test_plane.tscn" id="4_hxctj"]
 [ext_resource type="Shader" path="res://resources/shaders/checkerboard.gdshader" id="5_w4xqs"]
-[ext_resource type="Script" path="res://scenes/GenericMap.cs" id="6_1bhf7"]
+[ext_resource type="Script" path="res://scenes/GenericMap.cs" id="6_geo7n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c2u1n"]
 render_priority = 0
@@ -34,4 +34,4 @@ ZoomCurve = ExtResource("3_ia2xw")
 [node name="Level" type="MeshInstance3D" parent="." instance=ExtResource("4_hxctj")]
 material_override = SubResource("ShaderMaterial_c2u1n")
 mesh = SubResource("PlaneMesh_12rrh")
-script = ExtResource("6_1bhf7")
+script = ExtResource("6_geo7n")
