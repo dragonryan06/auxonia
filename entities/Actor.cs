@@ -2,17 +2,21 @@ using System;
 using System.Linq;
 using Godot;
 
+// A pathfinding entity.
 public partial class Actor : CharacterBody3D
 {
+    [Signal]
+    public delegate void PathFinishedEventHandler();
+
     public enum NavState
     {
-        IDLE,
-        NAVIGATING, // Navigating, but not currently moving or turning
-        MOVING,
-        TURNING_LEFT,
-        TURNING_RIGHT
+        Idle,
+        Navigating, // Navigating, but not currently moving or turning
+        Moving,
+        TurningLeft,
+        TurningRight
     }
-    public NavState navstate = NavState.IDLE;
+    public NavState navstate = NavState.Idle;
 
     [Export]
     private float MOVE_TIME = 1.0f;
@@ -27,6 +31,8 @@ public partial class Actor : CharacterBody3D
     private Vector3[] path;
     private Vector2I[] idPath;
 
+    private GenericMap map = null;
+
     public Timer walkCooldown;
 
     public override void _Ready()
@@ -38,7 +44,8 @@ public partial class Actor : CharacterBody3D
         AddChild(walkCooldown);
         walkCooldown.Start(MOVE_TIME);
 
-        GridPosition = GetNode<GenericMap>(Map).WorldToGrid(Position);
+        map = GetNode<GenericMap>(Map);
+        GridPosition = map.WorldToGrid(Position);
 
         Connect(
             CollisionObject3D.SignalName.InputEvent,
@@ -46,13 +53,13 @@ public partial class Actor : CharacterBody3D
         );
     }
 
-    public void MoveTo(GenericMap map, Vector2I positionID)
+    public void MoveTo(Vector2I positionID)
     {
         Destination = positionID;
-        UpdatePath(map);
+        UpdatePath();
     }
 
-    private void UpdatePath(GenericMap map)
+    private void UpdatePath()
     {
         if (map == null)
         {
@@ -66,21 +73,20 @@ public partial class Actor : CharacterBody3D
             if (path.Length <= 1)
             {
                 walkCooldown.Stop();
-                navstate = NavState.IDLE;
+                EmitSignal(SignalName.PathFinished);
+                navstate = NavState.Idle;
             }
             else
             {
                 walkCooldown.Start();
-                navstate = NavState.NAVIGATING;
+                navstate = NavState.Navigating;
             }
         }
     }
 
     private void TakeStep()
     {
-        GenericMap map = GetNode<GenericMap>(Map);
-
-        Action navCallback = () => navstate = NavState.NAVIGATING; map.SetPointSolid(lastGridPosition, false);
+        Action navCallback = () => navstate = NavState.Navigating; map.SetPointSolid(lastGridPosition, false);
 
         // Check if we can/should path to the next point
         if (path?.Length > 1 && (!map.IsPointSolid(idPath[1]) || idPath[1] == GridPosition))
@@ -109,7 +115,7 @@ public partial class Actor : CharacterBody3D
                 GridPosition = idPath[1];
                 map.SetPointSolid(GridPosition, true);
 
-                navstate = NavState.MOVING;
+                navstate = NavState.Moving;
                 Tween tween = GetTree().CreateTween();
                 tween.TweenProperty(
                     this,
@@ -130,7 +136,7 @@ public partial class Actor : CharacterBody3D
             {
                 // Turn right
                 walkCooldown.WaitTime = MOVE_TIME;
-                navstate = NavState.TURNING_RIGHT;
+                navstate = NavState.TurningRight;
                 Tween tween = GetTree().CreateTween();
                 tween.TweenProperty(
                     this,
@@ -146,7 +152,7 @@ public partial class Actor : CharacterBody3D
             {
                 // Turn left
                 walkCooldown.WaitTime = MOVE_TIME;
-                navstate = NavState.TURNING_LEFT;
+                navstate = NavState.TurningLeft;
                 Tween tween = GetTree().CreateTween();
                 tween.TweenProperty(
                     this,
@@ -169,7 +175,7 @@ public partial class Actor : CharacterBody3D
         // Try to find a new path
         else
         {
-            UpdatePath(map);
+            UpdatePath();
         }
     }
 

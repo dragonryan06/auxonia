@@ -15,19 +15,19 @@ public partial class AuxonAnimationController : AnimationTree
 	{
 		Actor actor = GetParent<Actor>();
 
-		Set("parameters/conditions/move", actor.navstate >= Actor.NavState.NAVIGATING);
-		Set("parameters/Move/conditions/idle", actor.navstate == Actor.NavState.IDLE);
-		Set("parameters/Move/conditions/walk", actor.navstate == Actor.NavState.MOVING);
+		Set("parameters/conditions/move", actor.navstate >= Actor.NavState.Navigating);
+		Set("parameters/Move/conditions/idle", actor.navstate == Actor.NavState.Idle);
+		Set("parameters/Move/conditions/walk", actor.navstate == Actor.NavState.Moving);
 		// Don't ask me why these are swapped, I don't know either, and I promise it's not as simple as you're thinking.
-		Set("parameters/Move/conditions/turn_right", actor.navstate == Actor.NavState.TURNING_LEFT);
-		Set("parameters/Move/conditions/turn_left", actor.navstate == Actor.NavState.TURNING_RIGHT);
+		Set("parameters/Move/conditions/turn_right", actor.navstate == Actor.NavState.TurningLeft);
+		Set("parameters/Move/conditions/turn_left", actor.navstate == Actor.NavState.TurningRight);
 
 		// Oh my god godot i love you but this is...
         AnimationNodeStateMachine moveStateMachine = (AnimationNodeStateMachine)((AnimationNodeStateMachine)TreeRoot).GetNode("Move");
 		AnimationNodeAnimation walkForward = (AnimationNodeAnimation)moveStateMachine.GetNode("WalkForward");
 		walkForward.TimelineLength = actor.walkCooldown.WaitTime;
 
-		if (actor.navstate == Actor.NavState.IDLE)
+		if (actor.navstate == Actor.NavState.Idle)
 		{
             Set("parameters/Idle/conditions/arm_swing", false);
             Set("parameters/Idle/conditions/look_left", false);
