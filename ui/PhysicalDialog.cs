@@ -8,7 +8,15 @@ public partial class PhysicalDialog : RigidBody2D
 
     public override void _Ready()
     {
-        GetNode<PanelContainer>("PanelContainer").Connect(
+        PanelContainer panel = GetNode<PanelContainer>("PanelContainer");
+        CollisionShape2D collider = GetNode<CollisionShape2D>("CollisionShape2D");
+        RectangleShape2D rect = (RectangleShape2D)collider.Shape;
+
+        Action fitCollider = () => { rect.Size = panel.Size; collider.Position = rect.Size / 2.0f; };
+        fitCollider();
+        panel.ItemRectChanged += () => fitCollider();
+
+        panel.Connect(
             Control.SignalName.GuiInput,
             new Callable(this, MethodName.OnInputEvent)
         );

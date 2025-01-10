@@ -25,6 +25,7 @@ script = ExtResource("1_cna5d")
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="HUD" type="CanvasLayer" parent="UI"]
+layer = 0
 
 [node name="TestElement" type="PanelContainer" parent="UI/HUD"]
 anchors_preset = 7
