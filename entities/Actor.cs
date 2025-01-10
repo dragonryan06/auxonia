@@ -46,11 +46,6 @@ public partial class Actor : CharacterBody3D
 
         map = GetNode<GenericMap>(Map);
         GridPosition = map.WorldToGrid(Position);
-
-        Connect(
-            CollisionObject3D.SignalName.InputEvent,
-            new Callable(this, MethodName.OnInputEvent)
-        );
     }
 
     public void MoveTo(Vector2I positionID)
@@ -165,7 +160,7 @@ public partial class Actor : CharacterBody3D
                 tween.TweenCallback(Callable.From(navCallback));
             }
 
-            if (Game.DebugOverlay && path?.Length > 1)
+            if (Game.NavDebugOverlay && path?.Length > 1)
             {
                 DebugDraw3D.DrawPointPath(path, duration: (float)walkCooldown.WaitTime,points_color:Colors.DarkCyan,lines_color:Colors.Cyan);
                 DebugDraw3D.DrawLine(map.GridToWorld(GridPosition), map.GridToWorld(Destination), Colors.Green,(float)walkCooldown.WaitTime);
@@ -176,14 +171,6 @@ public partial class Actor : CharacterBody3D
         else
         {
             UpdatePath();
-        }
-    }
-
-    private void OnInputEvent(Camera3D camera, InputEvent inputEvent, Vector3 eventPos, Vector3 eventNorm, int shapeIdx)
-    {
-        if (inputEvent is InputEventMouseButton mouse && mouse.ButtonIndex == MouseButton.Left && mouse.Pressed)
-        {
-            Game.Selected = this;
         }
     }
 }

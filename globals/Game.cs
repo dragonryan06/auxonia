@@ -3,9 +3,10 @@ using System;
 
 public partial class Game : Node
 {
-    public static Actor Selected { set; get; }
+    public static ISelectable? Selected = null;
 
-    public static bool DebugOverlay { set; get; }
+    public static bool NavDebugOverlay { set; get; }
+    public static bool TaskDebugOverlay { set; get; }
 
     public static MeshLibrary ItemPileMeshes;
 
@@ -13,11 +14,11 @@ public partial class Game : Node
     {
         ItemPileMeshes = GD.Load<MeshLibrary>("res://resources/models/testmeshlib.tres");
 
-        DebugOverlay = false;
+        NavDebugOverlay = false;
     }
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (Input.IsActionJustPressed("toggle_debug_overlay")) { DebugOverlay = !DebugOverlay; }
+        if (Input.IsActionJustPressed("toggle_debug_overlay")) { NavDebugOverlay = !NavDebugOverlay; }
     }
 }

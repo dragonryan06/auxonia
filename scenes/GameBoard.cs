@@ -76,7 +76,7 @@ public partial class GameBoard : Node
 
     public override void _Process(double delta)
     {
-        if (Game.DebugOverlay)
+        if (Game.NavDebugOverlay)
         {
             foreach (Rect2I rect in boardZones.Keys)
 			{

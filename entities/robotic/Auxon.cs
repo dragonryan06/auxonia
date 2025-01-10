@@ -26,11 +26,56 @@ public struct Task
     public int WorkToFinish = -1;
 }
 
-public partial class Auxon : Actor
+public partial class Auxon : Actor, ISelectable
 {
     [Signal]
     public delegate void TaskCompletedEventHandler();
 
+    // ISelectable
+    private bool selected = false;
+    public bool Selected 
+    {  
+        get 
+        {
+            return selected;
+        }
+        set
+        {
+            ShaderMaterial mat = (ShaderMaterial)GetNode<MeshInstance3D>("Skeleton3D/LeftTrack/LeftTrack").GetActiveMaterial(0).NextPass;
+            if (value)
+            {
+                mat.SetShaderParameter("outline_color", Colors.DarkOrange);
+            } 
+            else
+            {
+                mat.SetShaderParameter("outline_color", Colors.Black);
+            }
+            selected = value;
+        } 
+    }
+    private bool hovered = false;
+    public bool Hovered
+    {
+        get
+        {
+            return hovered;
+        }
+        set
+        {
+            ShaderMaterial mat = (ShaderMaterial)GetNode<MeshInstance3D>("Skeleton3D/LeftTrack/LeftTrack").GetActiveMaterial(0).NextPass;
+            if (value && !Selected)
+            {
+                mat.SetShaderParameter("outline_color", Colors.Yellow);
+            }
+            else if (!Selected)
+            {
+                mat.SetShaderParameter("outline_color", Colors.Black);
+            }
+            hovered = value;
+        }
+    }
+
+    // Task
     public Task[] TaskQueue;
     public Task? ActiveTask;
 
@@ -38,8 +83,24 @@ public partial class Auxon : Actor
     {
         base._Ready();
 
+        TaskQueue = Array.Empty<Task>();
+        ActiveTask = null;
+
         PathFinished += () => EmitSignal(SignalName.TaskCompleted);
         TaskCompleted += () => AssignTask(PopNextTaskOrNull());
+
+        Connect(
+            CollisionObject3D.SignalName.InputEvent,
+            new Callable(this, MethodName.OnInputEvent)
+        );
+        Connect(
+            CollisionObject3D.SignalName.MouseEntered,
+            new Callable(this, MethodName.OnMouseEntered)
+        );
+        Connect(
+            CollisionObject3D.SignalName.MouseExited,
+            new Callable(this, MethodName.OnMouseExited)
+        );
     }
 
     public void AssignTask(Task? t)
@@ -72,5 +133,25 @@ public partial class Auxon : Actor
             return next;
         }
         else return null;
+    }
+
+    public void OnInputEvent(Camera3D camera, InputEvent inputEvent, Vector3 eventPos, Vector3 eventNorm, int shapeIdx)
+    {
+        if (inputEvent is InputEventMouseButton mouse && mouse.ButtonIndex == MouseButton.Left && mouse.Pressed)
+        {
+            Selected = !Selected;
+            Hovered = true;
+            Game.Selected = this;
+        }
+    }
+
+    public void OnMouseEntered()
+    {
+        Hovered = true;
+    }
+
+    public void OnMouseExited()
+    {
+        Hovered = false;
     }
 }
