@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dlp0g3ilglgcf"]
+[gd_scene load_steps=10 format=3 uid="uid://dlp0g3ilglgcf"]
 
 [ext_resource type="Script" path="res://scenes/main/World.cs" id="1_cna5d"]
 [ext_resource type="Script" path="res://scenes/main/RtsCam.cs" id="2_4bvs1"]
+[ext_resource type="PackedScene" uid="uid://ds8tv8pknrsq3" path="res://ui/physical_dialog.tscn" id="2_43eii"]
 [ext_resource type="Texture2D" uid="uid://dyy0u03ocsdcc" path="res://resources/camera_zoom_curve.tres" id="3_ia2xw"]
 [ext_resource type="PackedScene" uid="uid://dfqpgltclapsp" path="res://scenes/levels/test_plane.tscn" id="4_hxctj"]
 [ext_resource type="Shader" path="res://resources/shaders/checkerboard.gdshader" id="5_w4xqs"]
@@ -20,6 +21,32 @@ size = Vector2(512, 512)
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_cna5d")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="CanvasLayer" parent="UI"]
+
+[node name="TestElement" type="PanelContainer" parent="UI/HUD"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -77.5
+offset_top = -40.0
+offset_right = 77.5
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="UI/HUD/TestElement"]
+layout_mode = 2
+text = "I'm a HUD element!!"
+
+[node name="PhysicalDialog" parent="UI" instance=ExtResource("2_43eii")]
+position = Vector2(466, 276)
+
+[node name="PhysicalDialog2" parent="UI" instance=ExtResource("2_43eii")]
+position = Vector2(466, 276)
 
 [node name="Pivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 150, 150)

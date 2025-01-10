@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://ds8tv8pknrsq3"]
+
+[ext_resource type="Script" path="res://ui/PhysicalDialog.cs" id="1_71rgh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2wyf2"]
+size = Vector2(40, 40)
+
+[node name="PhysicalDialog" type="RigidBody2D"]
+gravity_scale = 0.0
+lock_rotation = true
+linear_damp = 5.0
+script = ExtResource("1_71rgh")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(20, 20)
+shape = SubResource("RectangleShape2D_2wyf2")

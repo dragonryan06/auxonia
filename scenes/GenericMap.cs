@@ -99,7 +99,7 @@ public partial class GenericMap : MeshInstance3D
         if (inputEvent is InputEventMouseButton mouse && mouse.ButtonIndex == MouseButton.Left && mouse.Pressed)
         {
             DebugDraw3D.DrawRay(eventPos,eventNorm,4,Colors.HotPink,10);
-            if (Game.Selected != null) Game.Selected.MoveTo(WorldToGrid(eventPos));
+            if (Game.Selected is Auxon auxon) auxon.MoveTo(WorldToGrid(eventPos));
             else
             {
                 TestItemObject testItem = new TestItemObject();
