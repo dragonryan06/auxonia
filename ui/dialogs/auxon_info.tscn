@@ -1,0 +1,161 @@
+[gd_scene load_steps=5 format=3 uid="uid://ds8tv8pknrsq3"]
+
+[ext_resource type="Script" path="res://ui/dialogs/AuxonInfo.cs" id="1_eo05f"]
+[ext_resource type="Shader" path="res://resources/shaders/2d_corner_radius.gdshader" id="2_i7b60"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3nx4k"]
+shader = ExtResource("2_i7b60")
+shader_parameter/corner_radius = 16.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2wyf2"]
+resource_local_to_scene = true
+
+[node name="AuxonInfo" type="RigidBody2D"]
+gravity_scale = 0.0
+lock_rotation = true
+linear_damp = 5.0
+script = ExtResource("1_eo05f")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(392, 453)
+offset_right = 40.0
+offset_bottom = 40.0
+theme_type_variation = &"DialogPanel"
+
+[node name="Metadata" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="PanelContainer/Metadata"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/Metadata/Header"]
+layout_mode = 2
+theme_type_variation = &"InteriorPanel"
+
+[node name="Picture" type="SubViewportContainer" parent="PanelContainer/Metadata/Header/PanelContainer"]
+material = SubResource("ShaderMaterial_3nx4k")
+custom_minimum_size = Vector2(160, 240)
+layout_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="PanelContainer/Metadata/Header/PanelContainer/Picture"]
+handle_input_locally = false
+scaling_3d_scale = 2.0
+size = Vector2i(160, 240)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="PanelContainer/Metadata/Header/PanelContainer/Picture/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0110211, 0, 5.96283)
+top_level = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/Metadata/Header"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="PanelContainer/Metadata/Header/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "NAME_001"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/Metadata/Header/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = -16
+
+[node name="Subtitle" type="Label" parent="PanelContainer/Metadata/Header/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(196, 0)
+layout_mode = 2
+text = "Class"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Description" type="Label" parent="PanelContainer/Metadata/Header/VBoxContainer"]
+custom_minimum_size = Vector2(196, 0)
+layout_mode = 2
+text = "      Content content content content content content content"
+autowrap_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="PanelContainer/Metadata"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/h_separation = 32
+columns = 2
+
+[node name="Label" type="Label" parent="PanelContainer/Metadata/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Hey I'm an option label!"
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/Metadata/GridContainer"]
+custom_minimum_size = Vector2(116, 0)
+layout_mode = 2
+placeholder_text = "Editable text"
+
+[node name="Label2" type="Label" parent="PanelContainer/Metadata/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Hey I'm an option label!"
+
+[node name="LineEdit2" type="LineEdit" parent="PanelContainer/Metadata/GridContainer"]
+custom_minimum_size = Vector2(116, 0)
+layout_mode = 2
+placeholder_text = "Editable text"
+
+[node name="Label3" type="Label" parent="PanelContainer/Metadata/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Hey I'm an option label!"
+
+[node name="LineEdit3" type="LineEdit" parent="PanelContainer/Metadata/GridContainer"]
+custom_minimum_size = Vector2(116, 0)
+layout_mode = 2
+placeholder_text = "Editable text"
+
+[node name="Label4" type="Label" parent="PanelContainer/Metadata/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Hey I'm an option label!"
+
+[node name="LineEdit4" type="LineEdit" parent="PanelContainer/Metadata/GridContainer"]
+custom_minimum_size = Vector2(116, 0)
+layout_mode = 2
+placeholder_text = "Editable text"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/Metadata"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 64
+
+[node name="Button" type="Button" parent="PanelContainer/Metadata/HBoxContainer"]
+layout_mode = 2
+text = "A Button!!"
+
+[node name="Button2" type="Button" parent="PanelContainer/Metadata/HBoxContainer"]
+layout_mode = 2
+text = "A Button!!"
+
+[node name="Directives" type="Control" parent="PanelContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Debug" type="Control" parent="PanelContainer"]
+visible = false
+layout_mode = 2
+
+[node name="TabBar" type="TabBar" parent="."]
+offset_left = 478.0
+offset_top = 91.0
+offset_right = 884.0
+offset_bottom = 141.0
+rotation = 1.5708
+current_tab = 0
+tab_alignment = 2
+tab_count = 3
+tab_0/title = "Metadata"
+tab_1/title = "Directives"
+tab_2/title = "[debug]"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_2wyf2")

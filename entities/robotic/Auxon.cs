@@ -31,6 +31,9 @@ public partial class Auxon : Actor, ISelectable
     [Signal]
     public delegate void TaskCompletedEventHandler();
 
+    private PackedScene infoScene;
+    private AuxonInfo? infoDialog;
+
     // ISelectable
     private bool selected = false;
     public bool Selected 
@@ -82,6 +85,7 @@ public partial class Auxon : Actor, ISelectable
     public override void _Ready()
     {
         base._Ready();
+        infoScene = GD.Load<PackedScene>("res://ui/dialogs/auxon_info.tscn");
 
         TaskQueue = Array.Empty<Task>();
         ActiveTask = null;
@@ -142,6 +146,18 @@ public partial class Auxon : Actor, ISelectable
             Selected = !Selected;
             Hovered = true;
             Game.Selected = this;
+
+            World w = (World)FindParent("World");
+            if (!IsInstanceValid(infoDialog))
+            {
+                infoDialog = infoScene.Instantiate<AuxonInfo>();
+                infoDialog.Target = this;
+                w.AddDialog(infoDialog);
+            } else
+            {
+                w.RemoveDialog(infoDialog);
+                infoDialog.QueueFree();
+            }
         }
     }
 

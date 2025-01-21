@@ -35,8 +35,14 @@ folder_colors={
 "res://scenes/": "orange",
 "res://scenes/levels/": "teal",
 "res://scenes/main/": "red",
-"res://ui/": "yellow"
+"res://ui/": "yellow",
+"res://ui/dialogs/": "purple"
 }
+
+[gui]
+
+theme/custom="res://ui/default_theme.tres"
+theme/custom_font="res://resources/fonts/comic-relief/ComicRelief.ttf"
 
 [input]
 

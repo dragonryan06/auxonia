@@ -26,4 +26,14 @@ public partial class World : Node3D
 	{
 		LoadLevel();
 	}
+
+    public void AddDialog(PhysicalDialog dialog)
+    {
+        GetNode<CanvasLayer>("UI").AddChild(dialog);
+    }
+
+    public void RemoveDialog(PhysicalDialog dialog)
+    {
+        GetNode<CanvasLayer>("UI").RemoveChild(dialog);
+    }
 }
