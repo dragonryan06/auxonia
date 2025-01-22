@@ -16,6 +16,10 @@ public partial class AuxonInfo : PhysicalDialog
             TabBar.SignalName.TabChanged,
             new Callable(this, MethodName.OnTabChanged)
         );
+        Target.Connect(
+            Auxon.SignalName.TaskBegun,
+            new Callable(this, MethodName.UpdateView)
+        );
 
         PanelContainer panel = GetNode<PanelContainer>("PanelContainer");
         Action readjustTabs = () => { GetNode<TabBar>("TabBar").Position = new Vector2(panel.Size.X + 48, panel.Size.Y - 406); };
@@ -32,10 +36,15 @@ public partial class AuxonInfo : PhysicalDialog
 
     private void UpdateView()
     {
+        GD.Print("UPDATE");
         if (IsInstanceValid(Target))
         {
-            GetNode<Label>("PanelContainer/Metadata/Header/VBoxContainer/Title").Text = Target.Name;
-            GetNode<Label>("PanelContainer/Metadata/Header/VBoxContainer/MarginContainer/Subtitle").Text = "Generic Automaton";
+            HBoxContainer header = GetNode<HBoxContainer>("PanelContainer/Metadata/Header");
+            header.GetNode<Label>("VBoxContainer/Title").Text = Target.Name;
+            header.GetNode<Label>("VBoxContainer/MarginContainer/Subtitle").Text = "Generic Automaton";
+            header.GetNode<Label>("VBoxContainer/CurrentTask").Text = Target.ActiveTask?.Name ?? "Idle";
+            header.GetNode<Label>("VBoxContainer/AdditionalNote").Text = "Holding: " + (Target.HeldItem?.EntityName ?? "Nothing");
+            if (Target.HeldItem?.Quantity > 1) header.GetNode<Label>("VBoxContainer/AdditionalNote").Text += " [x" + Target.HeldItem.Quantity + "]";
         }
     }
 

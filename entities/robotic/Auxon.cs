@@ -29,6 +29,10 @@ public struct Task
 public partial class Auxon : Actor, ISelectable
 {
     [Signal]
+    public delegate void TaskEnqueuedEventHandler();
+    [Signal]
+    public delegate void TaskBegunEventHandler();
+    [Signal]
     public delegate void TaskCompletedEventHandler();
 
     private PackedScene infoScene;
@@ -82,6 +86,9 @@ public partial class Auxon : Actor, ISelectable
     public Task[] TaskQueue;
     public Task? ActiveTask;
 
+    // Inventory
+    public IItem? HeldItem = null;
+
     public override void _Ready()
     {
         base._Ready();
@@ -90,6 +97,7 @@ public partial class Auxon : Actor, ISelectable
         TaskQueue = Array.Empty<Task>();
         ActiveTask = null;
 
+        TaskEnqueued += () => { if (ActiveTask is null) AssignTask(PopNextTaskOrNull()); };
         PathFinished += () => EmitSignal(SignalName.TaskCompleted);
         TaskCompleted += () => AssignTask(PopNextTaskOrNull());
 
@@ -107,6 +115,14 @@ public partial class Auxon : Actor, ISelectable
         );
     }
 
+    public void EnqueueTask(Task task)
+    {
+        // Eventually have like priorities cause stuff to get pushed around
+        task.Owner = this;
+        TaskQueue = TaskQueue.Append(task).ToArray();
+        EmitSignal(SignalName.TaskEnqueued);
+    }
+
     public void AssignTask(Task? t)
     {
         if (t != null)
@@ -119,8 +135,9 @@ public partial class Auxon : Actor, ISelectable
                     {
                         MoveTo(task.Position);
                         break;
-                    } // FOR OTHER CASES start a like tick timer that will up the work amount or something...
+                    } // FOR OTHER CASES start a like do-after that will tick up the work amount or something...
             }
+            EmitSignal(SignalName.TaskBegun);
         }
         else
         {

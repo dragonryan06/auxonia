@@ -51,7 +51,7 @@ top_level = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/Metadata/Header"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 8
 
 [node name="Title" type="Label" parent="PanelContainer/Metadata/Header/VBoxContainer"]
 layout_mode = 2
@@ -70,11 +70,67 @@ text = "Class"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Description" type="Label" parent="PanelContainer/Metadata/Header/VBoxContainer"]
+[node name="CurrentTask" type="Label" parent="PanelContainer/Metadata/Header/VBoxContainer"]
 custom_minimum_size = Vector2(196, 0)
 layout_mode = 2
-text = "      Content content content content content content content"
+theme_override_colors/font_color = Color(0.691357, 0.691357, 0.691357, 1)
+text = "Walking to (-1, 49)"
+horizontal_alignment = 1
 autowrap_mode = 2
+
+[node name="AdditionalNote" type="Label" parent="PanelContainer/Metadata/Header/VBoxContainer"]
+custom_minimum_size = Vector2(196, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.690196, 0.690196, 0.690196, 1)
+text = "Holding NOTHING [x32]"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/Metadata/Header/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/Metadata/Header/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/Metadata/Header/VBoxContainer/MarginContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/Metadata/Header/VBoxContainer/MarginContainer2/VBoxContainer/ProgressBar"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -98.0
+offset_top = -5.0
+offset_right = 98.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Health"
+horizontal_alignment = 1
+
+[node name="ProgressBar2" type="ProgressBar" parent="PanelContainer/Metadata/Header/VBoxContainer/MarginContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/Metadata/Header/VBoxContainer/MarginContainer2/VBoxContainer/ProgressBar2"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -98.0
+offset_top = -5.0
+offset_right = 98.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Energy"
+horizontal_alignment = 1
 
 [node name="GridContainer" type="GridContainer" parent="PanelContainer/Metadata"]
 layout_mode = 2
