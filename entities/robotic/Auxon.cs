@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public enum TaskType
@@ -24,6 +25,11 @@ public struct Task
 
     public int Work = 0;
     public int WorkToFinish = -1;
+
+    public override string ToString()
+    {
+        return Type.ToString() + Position;
+    }
 }
 
 public partial class Auxon : Actor, ISelectable
@@ -83,7 +89,7 @@ public partial class Auxon : Actor, ISelectable
     }
 
     // Task
-    public Task[] TaskQueue;
+    public List<Task> TaskQueue;
     public Task? ActiveTask;
 
     // Inventory
@@ -94,7 +100,7 @@ public partial class Auxon : Actor, ISelectable
         base._Ready();
         infoScene = GD.Load<PackedScene>("res://ui/dialogs/auxon_info.tscn");
 
-        TaskQueue = Array.Empty<Task>();
+        TaskQueue = new List<Task>();
         ActiveTask = null;
 
         TaskEnqueued += () => { if (ActiveTask is null) AssignTask(PopNextTaskOrNull()); };
@@ -119,7 +125,7 @@ public partial class Auxon : Actor, ISelectable
     {
         // Eventually have like priorities cause stuff to get pushed around
         task.Owner = this;
-        TaskQueue = TaskQueue.Append(task).ToArray();
+        TaskQueue.Add(task);
         EmitSignal(SignalName.TaskEnqueued);
     }
 
@@ -147,10 +153,10 @@ public partial class Auxon : Actor, ISelectable
 
     public Task? PopNextTaskOrNull()
     {
-        if (TaskQueue.Length > 0)
+        if (TaskQueue.Count > 0)
         {
-            Task next = TaskQueue[0];
-            TaskQueue = TaskQueue.Skip(1).ToArray();
+            Task next = TaskQueue.First();
+            TaskQueue.RemoveAt(0);
             return next;
         }
         else return null;

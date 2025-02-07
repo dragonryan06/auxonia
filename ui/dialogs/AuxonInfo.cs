@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.ConstrainedExecution;
 
 public partial class AuxonInfo : PhysicalDialog
@@ -19,6 +20,10 @@ public partial class AuxonInfo : PhysicalDialog
         );
         Target.Connect(
             Auxon.SignalName.TaskBegun,
+            new Callable(this, MethodName.UpdateView)
+        );
+        Target.Connect(
+            Auxon.SignalName.TaskEnqueued,
             new Callable(this, MethodName.UpdateView)
         );
 
@@ -51,7 +56,9 @@ public partial class AuxonInfo : PhysicalDialog
             VBoxContainer debugContainer = GetNode<VBoxContainer>("PanelContainer/Debug/VBoxContainer");
             debugContainer.GetNode<Label>("Name").Text = "        Entity: " + Target.Name + " [" + Target.GetInstanceId() + "]";
             debugContainer.GetNode<Label>("ActiveTask").Text = "        Active Task: " + Target.ActiveTask?.Name;
-            debugContainer.GetNode<Label>("TaskQueue").Text = "        Task Queue: [" + Target.TaskQueue.ToString() + "]";
+            debugContainer.GetNode<Label>("TaskQueue").Text = "        Task Queue: [" + string.Join(", ",Target.TaskQueue) + "]";
+            GD.Print(Target.TaskQueue.Count);
+            GD.Print(string.Join(",", Target.TaskQueue));
             debugContainer.GetNode<Label>("HeldItem").Text = "        Held Item: " + Target.HeldItem;
         }
     }
