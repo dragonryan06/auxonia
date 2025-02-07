@@ -17,7 +17,7 @@ linear_damp = 5.0
 script = ExtResource("1_eo05f")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-custom_minimum_size = Vector2(392, 453)
+custom_minimum_size = Vector2(430, 497)
 offset_right = 40.0
 offset_bottom = 40.0
 theme_type_variation = &"DialogPanel"
@@ -196,8 +196,51 @@ text = "A Button!!"
 visible = false
 layout_mode = 2
 
-[node name="Debug" type="Control" parent="PanelContainer"]
+[node name="Debug" type="ScrollContainer" parent="PanelContainer"]
 visible = false
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/Debug"]
+layout_mode = 2
+
+[node name="Entity" type="Label" parent="PanelContainer/Debug/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "Entity"
+
+[node name="Name" type="Label" parent="PanelContainer/Debug/VBoxContainer"]
+layout_mode = 2
+text = "        Entity: AUXON [InstanceID]"
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/Debug/VBoxContainer"]
+layout_mode = 2
+
+[node name="Task" type="Label" parent="PanelContainer/Debug/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "Task"
+
+[node name="ActiveTask" type="Label" parent="PanelContainer/Debug/VBoxContainer"]
+layout_mode = 2
+text = "        Active Task: NONE"
+
+[node name="TaskQueue" type="Label" parent="PanelContainer/Debug/VBoxContainer"]
+layout_mode = 2
+text = "        Task Queue: [ ]"
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/Debug/VBoxContainer"]
+layout_mode = 2
+
+[node name="Inventory" type="Label" parent="PanelContainer/Debug/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "Inventory"
+
+[node name="HeldItem" type="Label" parent="PanelContainer/Debug/VBoxContainer"]
+layout_mode = 2
+text = "        Held Item: NONE"
+
+[node name="HSeparator3" type="HSeparator" parent="PanelContainer/Debug/VBoxContainer"]
 layout_mode = 2
 
 [node name="TabBar" type="TabBar" parent="."]

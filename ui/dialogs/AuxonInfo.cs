@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
 
 public partial class AuxonInfo : PhysicalDialog
@@ -36,15 +37,22 @@ public partial class AuxonInfo : PhysicalDialog
 
     private void UpdateView()
     {
-        GD.Print("UPDATE");
         if (IsInstanceValid(Target))
         {
+            // Metadata
             HBoxContainer header = GetNode<HBoxContainer>("PanelContainer/Metadata/Header");
             header.GetNode<Label>("VBoxContainer/Title").Text = Target.Name;
             header.GetNode<Label>("VBoxContainer/MarginContainer/Subtitle").Text = "Generic Automaton";
             header.GetNode<Label>("VBoxContainer/CurrentTask").Text = Target.ActiveTask?.Name ?? "Idle";
             header.GetNode<Label>("VBoxContainer/AdditionalNote").Text = "Holding: " + (Target.HeldItem?.EntityName ?? "Nothing");
             if (Target.HeldItem?.Quantity > 1) header.GetNode<Label>("VBoxContainer/AdditionalNote").Text += " [x" + Target.HeldItem.Quantity + "]";
+
+            // Debug
+            VBoxContainer debugContainer = GetNode<VBoxContainer>("PanelContainer/Debug/VBoxContainer");
+            debugContainer.GetNode<Label>("Name").Text = "        Entity: " + Target.Name + " [" + Target.GetInstanceId() + "]";
+            debugContainer.GetNode<Label>("ActiveTask").Text = "        Active Task: " + Target.ActiveTask?.Name;
+            debugContainer.GetNode<Label>("TaskQueue").Text = "        Task Queue: [" + Target.TaskQueue.ToString() + "]";
+            debugContainer.GetNode<Label>("HeldItem").Text = "        Held Item: " + Target.HeldItem;
         }
     }
 
