@@ -102,7 +102,7 @@ public partial class GenericMap : MeshInstance3D
             if (Game.Selected is Auxon auxon)
             {
                 Vector2I pos = WorldToGrid(eventPos);
-                Task walk = new Task(pos,TaskType.Move);
+                Task walk = new Task(pos,TaskType.Move,10);
                 walk.Name = "Walking to " + pos;
                 auxon.EnqueueTask(walk);
             }

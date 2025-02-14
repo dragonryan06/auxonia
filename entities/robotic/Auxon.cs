@@ -10,12 +10,13 @@ public enum TaskType
     Haul
 }
 
-public struct Task
+public struct Task : IComparable<Task>
 {
-    public Task(Vector2I position, TaskType type)
+    public Task(Vector2I position, TaskType type, int priority)
     {
         Position = position;
         Type = type;
+        Priority = priority;
     }
 
     public string Name = "Unnamed Task";
@@ -23,12 +24,19 @@ public struct Task
     public Vector2I Position;
     public Auxon Owner = null;
 
+    public int Priority = 0;
+
     public int Work = 0;
     public int WorkToFinish = -1;
 
-    public override string ToString()
+    public readonly override string ToString()
     {
         return Type.ToString() + Position;
+    }
+
+    public readonly int CompareTo(Task other)
+    {
+        return Priority - other.Priority;
     }
 }
 
@@ -155,6 +163,7 @@ public partial class Auxon : Actor, ISelectable
     {
         if (TaskQueue.Count > 0)
         {
+            TaskQueue.Sort();
             Task next = TaskQueue.First();
             TaskQueue.RemoveAt(0);
             return next;
