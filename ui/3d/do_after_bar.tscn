@@ -1,0 +1,19 @@
+[gd_scene load_steps=6 format=3 uid="uid://bquwjefs5smha"]
+
+[ext_resource type="Shader" path="res://resources/shaders/doafterbar.gdshader" id="1_rn0ee"]
+[ext_resource type="Texture2D" uid="uid://debs172tb58es" path="res://resources/doafter_gradient_default.tres" id="2_mmtsf"]
+[ext_resource type="Script" path="res://ui/3d/DoAfter.cs" id="2_qr0u2"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_80jak"]
+size = Vector2(4, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mhta3"]
+render_priority = 0
+shader = ExtResource("1_rn0ee")
+shader_parameter/percentage = 0.0
+shader_parameter/gradient = ExtResource("2_mmtsf")
+
+[node name="DoAfterBar" type="MeshInstance3D"]
+mesh = SubResource("QuadMesh_80jak")
+surface_material_override/0 = SubResource("ShaderMaterial_mhta3")
+script = ExtResource("2_qr0u2")

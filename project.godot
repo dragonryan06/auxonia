@@ -36,6 +36,7 @@ folder_colors={
 "res://scenes/levels/": "teal",
 "res://scenes/main/": "red",
 "res://ui/": "yellow",
+"res://ui/3d/": "green",
 "res://ui/dialogs/": "purple"
 }
 
