@@ -50,6 +50,8 @@ public partial class Auxon : Actor, ISelectable
     public delegate void TaskCompletedEventHandler();
 
     private PackedScene infoScene;
+    private PackedScene doAfter;
+
     private AuxonInfo? infoDialog;
 
     // ISelectable
@@ -107,6 +109,7 @@ public partial class Auxon : Actor, ISelectable
     {
         base._Ready();
         infoScene = GD.Load<PackedScene>("res://ui/dialogs/auxon_info.tscn");
+        doAfter = GD.Load<PackedScene>("res://ui/3d/do_after_bar.tscn");
 
         TaskQueue = new List<Task>();
         ActiveTask = null;
@@ -149,7 +152,18 @@ public partial class Auxon : Actor, ISelectable
                     {
                         MoveTo(task.Position);
                         break;
-                    } // FOR OTHER CASES start a like do-after that will tick up the work amount or something...
+                    }
+                case TaskType.Mine:
+                    {
+                        DoAfter bar = doAfter.Instantiate<DoAfter>();
+                        bar.Position = Vector3.Up*3.5f;
+                        bar.MaxTicks = 100;
+                        AddChild(bar);
+                        Tween tween = GetTree().CreateTween();
+                        tween.TweenProperty(bar, "TickCount", 100, 2.0);
+                        tween.TweenCallback(new Callable(bar, "queue_free"));
+                        break;
+                    }
             }
             EmitSignal(SignalName.TaskBegun);
         }

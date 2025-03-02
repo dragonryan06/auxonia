@@ -105,6 +105,9 @@ public partial class GenericMap : MeshInstance3D
                 Task walk = new Task(pos,TaskType.Move,10);
                 walk.Name = "Walking to " + pos;
                 auxon.EnqueueTask(walk);
+                Task mine = new Task(pos, TaskType.Mine, 10);
+                mine.Name = "Mining";
+                auxon.EnqueueTask(mine);
             }
             else
             {

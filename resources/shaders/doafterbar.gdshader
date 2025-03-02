@@ -18,6 +18,8 @@ void vertex() {
 void fragment() {
 	ALBEDO = vec3(0.025,0.025,0.025);
 	if (UV.x <= percentage) {
-		ALBEDO = texture(gradient, vec2(percentage, percentage)).rgb;
+		// When you sample the 100% edge of the gradient it turns like yellow...
+		float p = clamp(percentage, 0.0, 0.99);
+		ALBEDO = texture(gradient, vec2(p, p)).rgb;
 	}
 }
