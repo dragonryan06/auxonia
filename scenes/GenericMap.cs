@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 
 public partial class GenericMap : MeshInstance3D
@@ -105,9 +106,19 @@ public partial class GenericMap : MeshInstance3D
                 Task walk = new Task(pos,TaskType.Move,10);
                 walk.Name = "Walking to " + pos;
                 auxon.EnqueueTask(walk);
-                Task mine = new Task(pos, TaskType.Mine, 10);
-                mine.Name = "Mining";
-                auxon.EnqueueTask(mine);
+
+                List<IBoardZone> zoneLookup = GetNode<GameBoard>("GameBoard").ZoneLookup(pos);
+                for (int i = 0; i < zoneLookup.Count; i++)
+                {
+                    if (zoneLookup[i] is MiningZone)
+                    {
+                        Task mine = new Task(pos, TaskType.Mine, 10);
+                        mine.Name = "Mining";
+                        mine.Zone = zoneLookup[i];
+                        auxon.EnqueueTask(mine);
+                        break;
+                    }
+                }
             }
             else
             {

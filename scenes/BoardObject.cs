@@ -24,6 +24,11 @@ public partial class ItemPile : MeshInstance3D, IBoardObject, IItem
 
     public override void _Ready()
     {
-        Mesh = (Mesh)Game.ItemPileMeshes.GetItemMesh(3).Duplicate();
+        Mesh = Type switch
+        {
+            ItemType.IngotSteel => (Mesh)Game.ItemPileMeshes.GetItemMesh(3).Duplicate(),
+            ItemType.OreIron => (Mesh)Game.ItemPileMeshes.GetItemMesh((int)(GD.Randi() % 4) + 4).Duplicate(),
+            _ => (Mesh)Game.ItemPileMeshes.GetItemMesh(3).Duplicate(),
+        };
     }
 }

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public partial class GameBoard : Node
@@ -17,6 +18,11 @@ public partial class GameBoard : Node
     // As opposed to the godot collection of the same name...
     private System.Collections.Generic.Dictionary<Vector2I, IBoardObject> boardData;
 	private System.Collections.Generic.Dictionary<Rect2I, IBoardZone> boardZones;
+
+	public bool IsCellOccupied(Vector2I pos)
+	{
+		return boardData.TryGetValue(pos, out _) || map.IsPointSolid(pos);
+	}
 
 	public bool PlaceItem(Vector2I pos, IItem item)
 	{
@@ -41,8 +47,16 @@ public partial class GameBoard : Node
 			AddChild(newPile);
 			return true;
 		}
-		
-		
+	}
+
+	public List<IBoardZone> ZoneLookup(Vector2I pos)
+	{
+		List<IBoardZone> hits = new List<IBoardZone>();
+		foreach (IBoardZone zone in boardZones.Values)
+		{
+			if (zone.Bounds.HasPoint(pos)) hits.Add(zone);
+		}
+		return hits;
 	}
 
 	public Vector2I[] GetUsedCells()

@@ -19,10 +19,19 @@ public struct Task : IComparable<Task>
         Priority = priority;
     }
 
+    public Task(Vector2I position, IBoardZone zone, TaskType type, int priority)
+    {
+        Position = position;
+        Zone = zone;
+        Type = type;
+        Priority = priority;
+    }
+
     public string Name = "Unnamed Task";
     public TaskType Type;
     public Vector2I Position;
-    public Auxon Owner = null;
+    public IBoardZone? Zone = null;
+    public Auxon? Owner = null;
 
     public int Priority = 0;
 
@@ -156,12 +165,26 @@ public partial class Auxon : Actor, ISelectable
                 case TaskType.Mine:
                     {
                         DoAfter bar = doAfter.Instantiate<DoAfter>();
-                        bar.Position = Vector3.Up*3.5f;
+                        bar.Position = Vector3.Up * 3.5f;
                         bar.MaxTicks = 100;
                         AddChild(bar);
+
+                        Action callback = () =>
+                        {
+                            bar.QueueFree();
+
+                            MiningZone zone = (MiningZone)task.Zone;
+                            zone.TryMineChunk(task.Position);
+                            // check if we should keep mining so this isnt infinite
+                            Task keepMining = new Task(task.Position, task.Zone, task.Type, task.Priority);
+                            keepMining.Name = task.Name;
+                            EnqueueTask(keepMining);
+                            EmitSignal(SignalName.TaskCompleted);
+                        };
+
                         Tween tween = GetTree().CreateTween();
                         tween.TweenProperty(bar, "TickCount", 100, 2.0);
-                        tween.TweenCallback(new Callable(bar, "queue_free"));
+                        tween.TweenCallback(Callable.From(callback));
                         break;
                     }
             }
