@@ -57,8 +57,6 @@ public partial class AuxonInfo : PhysicalDialog
             debugContainer.GetNode<Label>("Name").Text = "        Entity: " + Target.Name + " [" + Target.GetInstanceId() + "]";
             debugContainer.GetNode<Label>("ActiveTask").Text = "        Active Task: " + Target.ActiveTask?.Name;
             debugContainer.GetNode<Label>("TaskQueue").Text = "        Task Queue: [" + string.Join(", ",Target.TaskQueue) + "]";
-            GD.Print(Target.TaskQueue.Count);
-            GD.Print(string.Join(",", Target.TaskQueue));
             debugContainer.GetNode<Label>("HeldItem").Text = "        Held Item: " + Target.HeldItem;
         }
     }
