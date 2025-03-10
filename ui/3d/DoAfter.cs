@@ -25,6 +25,13 @@ public partial class DoAfter : MeshInstance3D
         }
     }
 
+    public void Start(Action callback)
+    {
+        Tween tween = GetTree().CreateTween();
+        tween.TweenProperty(this, "TickCount", 100, 2.0);
+        tween.TweenCallback(Callable.From(callback));
+    }
+
     private void Update()
     {
         ShaderMaterial mat = (ShaderMaterial)GetActiveMaterial(0);

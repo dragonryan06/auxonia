@@ -174,26 +174,27 @@ public partial class Auxon : Actor, ISelectable
                             bar.QueueFree();
 
                             MiningZone zone = (MiningZone)task.Zone;
-                            zone.TryMineChunk(task.Position);
-                            // check if we should keep mining so this isnt infinite
-                            Task keepMining = new Task(task.Position, task.Zone, task.Type, task.Priority);
-                            keepMining.Name = task.Name;
-                            EnqueueTask(keepMining);
+                            if (!zone.TryMineChunk(task.Position))
+                            {
+                                // Continue mining until success
+                                Task keepMining = new Task(task.Position, task.Zone, task.Type, task.Priority);
+                                keepMining.Name = task.Name;
+                                EnqueueTask(keepMining);
+                            }
                             EmitSignal(SignalName.TaskCompleted);
                         };
 
-                        Tween tween = GetTree().CreateTween();
-                        tween.TweenProperty(bar, "TickCount", 100, 2.0);
-                        tween.TweenCallback(Callable.From(callback));
+                        bar.Start(callback);
                         break;
                     }
             }
-            EmitSignal(SignalName.TaskBegun);
         }
         else
         {
+            ActiveTask = null;
             GD.Print("Auxon finished every task!!! probably handle this with a statemachine somehow....");
         }
+        EmitSignal(SignalName.TaskBegun);
     }
 
     public Task? PopNextTaskOrNull()
